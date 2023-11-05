@@ -12,3 +12,7 @@ See this thread on the forum: https://ameisenbotx.de/Thread-How-to-run-the-serve
 ❤️ TrinityCore for their MMAP format - https://github.com/TrinityCore/TrinityCore
 
 ❤️ Recast & Detour - https://github.com/recastnavigation/recastnavigation
+
+## Notes
+
+Copy AzerothCore mmaps to some folder - then update config, for example: sMmapsPath=C:\local\mmaps\
