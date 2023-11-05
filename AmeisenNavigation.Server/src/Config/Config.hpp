@@ -13,9 +13,15 @@ constexpr auto CONFIG_CHAR_STRING = 's';
 constexpr auto CONFIG_CHAR_FLOAT = 'f';
 constexpr auto CONFIG_CHAR_DELIMITER = '=';
 
+/**
+ * @brief A structure for managing configuration settings.
+ */
 struct AmeisenNavConfig
 {
 private:
+	/**
+     * @brief A map that associates configuration keys with their corresponding values.
+     */
     std::map<std::string, void*> Map
     {
         { "fCatmullRomSplineAlpha", &catmullRomSplineAlpha },
@@ -30,16 +36,21 @@ private:
     };
 
 public:
-    float catmullRomSplineAlpha = 1.0f;
-    float randomPathMaxDistance = 1.5f;
-    int catmullRomSplinePoints = 4;
-    int maxPolyPath = 512;
-    int maxSearchNodes = 65535;
-    int port = 47110;
-    int clientVersion = static_cast<int>(CLIENT_VERSION::V335A);
-    std::string ip = "127.0.0.1";
-    std::string mmapsPath = "C:\\shady stuff\\mmaps\\";
+	float catmullRomSplineAlpha = 1.0f; /**< @brief Alpha value for Catmull-Rom spline. */
+    float randomPathMaxDistance = 1.5f; /**< @brief Maximum distance for random paths. */
+    int catmullRomSplinePoints = 4; /**< @brief Number of points in Catmull-Rom spline. */
+    int maxPolyPath = 512; /**< @brief Maximum number of poly paths. */
+    int maxSearchNodes = 65535; /**< @brief Maximum number of search nodes. */
+    int port = 47110; /**< @brief Port number. */
+    int clientVersion = static_cast<int>(CLIENT_VERSION::V335A); /**< @brief Client version. */
+    std::string ip = "127.0.0.1"; /**< @brief IP address. */
+    std::string mmapsPath = "C:\\local\\mmaps\\"; /**< @brief Path to mmaps. */
 
+	/**
+     * @brief Save the configuration to a file.
+     *
+     * @param path The path to the output file.
+     */
     void Save(const std::filesystem::path& path)
     {
         std::ofstream outputFile(path);
@@ -60,6 +71,11 @@ public:
         outputFile.close();
     }
 
+	/**
+     * @brief Load the configuration from a file.
+     *
+     * @param path The path to the input file.
+     */
     void Load(const std::filesystem::path& path)
     {
         std::ifstream input(path);
