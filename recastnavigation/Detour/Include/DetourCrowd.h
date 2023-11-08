@@ -100,15 +100,18 @@ struct dtCrowdAgentParams
     void* userData;
 };
 
+/**
+ * @brief Enumeration representing different states of a crowd agent's move request.
+ */
 enum MoveRequestState
 {
-    DT_CROWDAGENT_TARGET_NONE = 0,
-    DT_CROWDAGENT_TARGET_FAILED,
-    DT_CROWDAGENT_TARGET_VALID,
-    DT_CROWDAGENT_TARGET_REQUESTING,
-    DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE,
-    DT_CROWDAGENT_TARGET_WAITING_FOR_PATH,
-    DT_CROWDAGENT_TARGET_VELOCITY,
+    DT_CROWDAGENT_TARGET_NONE = 0,           ///< No target for the crowd agent.
+    DT_CROWDAGENT_TARGET_FAILED,             ///< The target request for the crowd agent has failed.
+    DT_CROWDAGENT_TARGET_VALID,              ///< The target for the crowd agent is valid.
+    DT_CROWDAGENT_TARGET_REQUESTING,         ///< The crowd agent is requesting a target.
+    DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE,  ///< The crowd agent is waiting for its turn in the queue.
+    DT_CROWDAGENT_TARGET_WAITING_FOR_PATH,   ///< The crowd agent is waiting for a valid path to the target.
+    DT_CROWDAGENT_TARGET_VELOCITY,          ///< The crowd agent is using a specified velocity as its target.
 };
 
 /// Represents an agent managed by a #dtCrowd object.
@@ -171,12 +174,18 @@ struct dtCrowdAgent
     float targetReplanTime;				/// <Time since the agent's target was replanned.
 };
 
+/**
+ * @brief Structure representing animation information for a crowd agent.
+ */
 struct dtCrowdAgentAnimation
 {
-    bool active;
-    float initPos[3], startPos[3], endPos[3];
-    dtPolyRef polyRef;
-    float t, tmax;
+    bool active;                  ///< Flag indicating if animation is active for the crowd agent.
+    float initPos[3];            ///< Initial position for the animation.
+    float startPos[3];           ///< Starting position for the animation.
+    float endPos[3];             ///< Ending position for the animation.
+    dtPolyRef polyRef;           ///< Reference to the polygon associated with the animation.
+    float t;                     ///< Current animation time.
+    float tmax;                  ///< Maximum animation time.
 };
 
 /// Crowd agent update flags.
@@ -191,11 +200,15 @@ enum UpdateFlags
     DT_CROWD_OPTIMIZE_TOPO = 16,		///< Use dtPathCorridor::optimizePathTopology() to optimize the agent path.
 };
 
+/**
+ * @brief Structure representing debugging information for a crowd agent.
+ */
 struct dtCrowdAgentDebugInfo
 {
-    int idx;
-    float optStart[3], optEnd[3];
-    dtObstacleAvoidanceDebugData* vod;
+    int idx;                     ///< Index of the crowd agent.
+    float optStart[3];           ///< Optimized start position.
+    float optEnd[3];             ///< Optimized end position.
+    dtObstacleAvoidanceDebugData* vod; ///< Debug data for obstacle avoidance.
 };
 
 /// Provides local steering behaviors for a group of agents.

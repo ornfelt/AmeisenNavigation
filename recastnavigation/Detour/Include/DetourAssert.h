@@ -16,6 +16,11 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
+/**
+ * @file DetourAssert.h
+ * @brief Custom assertion handling for Detour.
+ */
+
 #ifndef DETOURASSERT_H
 #define DETOURASSERT_H
 
@@ -25,25 +30,56 @@
 #ifdef NDEBUG
 
 // From http://cnicholson.net/2009/02/stupid-c-tricks-adventures-in-assert/
+/**
+ * @def dtAssert(x)
+ *
+ * A macro for assertion in release (non-debug) builds.
+ * In release builds, assertions are disabled, and this macro does nothing.
+ *
+ * @param x The expression to evaluate.
+ */
 #	define dtAssert(x) do { (void)sizeof(x); } while((void)(__LINE__==-1),false)
 
 #else
 
-/// An assertion failure function.
-//  @param[in]		expression  asserted expression.
-//  @param[in]		file  Filename of the failed assertion.
-//  @param[in]		line  Line number of the failed assertion.
-///  @see dtAssertFailSetCustom
+/**
+ * @brief An assertion failure function.
+ *
+ * This function is invoked when an assertion fails in debug builds.
+ *
+ * @param expression The asserted expression.
+ * @param file The filename where the assertion failed.
+ * @param line The line number where the assertion failed.
+ * @see dtAssertFailSetCustom
+ */
 typedef void (dtAssertFailFunc)(const char* expression, const char* file, int line);
 
-/// Sets the base custom assertion failure function to be used by Detour.
-///  @param[in]		assertFailFunc	The function to be invoked in case of failure of #dtAssert
+/**
+ * @brief Sets the base custom assertion failure function to be used by Detour.
+ *
+ * This function sets the custom assertion failure function for Detour.
+ *
+ * @param assertFailFunc The function to be invoked in case of assertion failure in #dtAssert.
+ */
 void dtAssertFailSetCustom(dtAssertFailFunc* assertFailFunc);
 
-/// Gets the base custom assertion failure function to be used by Detour.
+/**
+ * @brief Gets the base custom assertion failure function to be used by Detour.
+ *
+ * This function returns a pointer to the current custom assertion failure function.
+ */
 dtAssertFailFunc* dtAssertFailGetCustom();
 
 #	include <assert.h>
+/**
+ * @def dtAssert(expression)
+ *
+ * A macro for assertion in debug builds.
+ * In debug builds, assertions are enabled, and this macro checks the specified expression.
+ * If the expression evaluates to false, the custom assertion failure function is invoked.
+ *
+ * @param expression The expression to evaluate.
+ */
 #	define dtAssert(expression) \
 		{ \
 			dtAssertFailFunc* failFunc = dtAssertFailGetCustom(); \

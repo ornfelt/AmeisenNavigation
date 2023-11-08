@@ -16,6 +16,11 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
+/**
+ * @file DetourCommon.h
+ * @brief Common utility functions and macros for Detour.
+ */
+
 #ifndef DETOURCOMMON_H
 #define DETOURCOMMON_H
 
@@ -23,14 +28,12 @@
 #include <stddef.h>
 
 /**
-@defgroup detour Detour
-
-Members in this module are used to create, manipulate, and query navigation
-meshes.
-
-@note This is a summary list of members.  Use the index or search
-feature to find minor members.
-*/
+ * @defgroup detour Detour
+ *
+ * Members in this module are used to create, manipulate, and query navigation meshes.
+ *
+ * @note This is a summary list of members. Use the index or search feature to find minor members.
+ */
 
 /// @name General helper functions
 /// @{
@@ -431,8 +434,11 @@ bool dtOverlapPolyPoly2D(const float* polya, const int npolya,
     const float* polyb, const int npolyb);
 
 /// @}
-/// @name Miscellanious functions.
+/// @name Miscellaneous functions.
 /// @{
+/// Calculates the next power of 2 greater than or equal to the input value.
+/// @param[in] v The input value.
+/// @return The next power of 2.
 inline unsigned int dtNextPow2(unsigned int v)
 {
     v--;
@@ -445,6 +451,9 @@ inline unsigned int dtNextPow2(unsigned int v)
     return v;
 }
 
+/// Calculates the integer logarithm base 2 of the input value.
+/// @param[in] v The input value.
+/// @return The integer logarithm base 2.
 inline unsigned int dtIlog2(unsigned int v)
 {
     unsigned int r;
@@ -457,10 +466,19 @@ inline unsigned int dtIlog2(unsigned int v)
     return r;
 }
 
+/// Aligns an integer to the nearest multiple of 4.
+/// @param[in] x The input integer.
+/// @return The aligned integer.
 inline int dtAlign4(int x) { return (x + 3) & ~3; }
 
+/// Returns the opposite tile index for a given side index.
+/// @param[in] side The input side index.
+/// @return The opposite tile index.
 inline int dtOppositeTile(int side) { return (side + 4) & 0x7; }
 
+/// Swaps the values of two unsigned characters.
+/// @param[in,out] a Pointer to the first unsigned character.
+/// @param[in,out] b Pointer to the second unsigned character.
 inline void dtSwapByte(unsigned char* a, unsigned char* b)
 {
     unsigned char tmp = *a;
@@ -468,39 +486,61 @@ inline void dtSwapByte(unsigned char* a, unsigned char* b)
     *b = tmp;
 }
 
+/// Swaps the endianness of an unsigned short integer.
+/// @param[in,out] v Pointer to the unsigned short integer to swap.
 inline void dtSwapEndian(unsigned short* v)
 {
     unsigned char* x = (unsigned char*)v;
     dtSwapByte(x + 0, x + 1);
 }
 
+/// Swaps the endianness of a short integer.
+/// @param[in,out] v Pointer to the short integer to swap.
 inline void dtSwapEndian(short* v)
 {
     unsigned char* x = (unsigned char*)v;
     dtSwapByte(x + 0, x + 1);
 }
 
+/// Swaps the endianness of an unsigned integer.
+/// @param[in,out] v Pointer to the unsigned integer to swap.
 inline void dtSwapEndian(unsigned int* v)
 {
     unsigned char* x = (unsigned char*)v;
     dtSwapByte(x + 0, x + 3); dtSwapByte(x + 1, x + 2);
 }
 
+/// Swaps the endianness of an integer.
+/// @param[in,out] v Pointer to the integer to swap.
 inline void dtSwapEndian(int* v)
 {
     unsigned char* x = (unsigned char*)v;
     dtSwapByte(x + 0, x + 3); dtSwapByte(x + 1, x + 2);
 }
 
+/// Swaps the endianness of a float.
+/// @param[in,out] v Pointer to the float to swap.
 inline void dtSwapEndian(float* v)
 {
     unsigned char* x = (unsigned char*)v;
     dtSwapByte(x + 0, x + 3); dtSwapByte(x + 1, x + 2);
 }
 
+/// Generates a random point within a convex polygon defined by its vertices.
+/// @param[in] pts The vertices of the convex polygon.
+/// @param[in] npts The number of vertices in the polygon.
+/// @param[in] areas The areas of the triangles formed by the vertices.
+/// @param[in] s Random value in [0,1).
+/// @param[in] t Random value in [0,1).
+/// @param[out] out The generated random point [(x, y, z)].
 void dtRandomPointInConvexPoly(const float* pts, const int npts, float* areas,
     const float s, const float t, float* out);
 
+/// Retrieves a pointer from a buffer and advances the buffer pointer by a specified distance.
+/// @tparam TypeToRetrieveAs The type to retrieve as.
+/// @param[in,out] buffer Pointer to the buffer.
+/// @param[in] distanceToAdvance The distance to advance the buffer pointer.
+/// @return The retrieved pointer.
 template<typename TypeToRetrieveAs>
 TypeToRetrieveAs* dtGetThenAdvanceBufferPointer(const unsigned char*& buffer, const size_t distanceToAdvance)
 {
@@ -509,6 +549,11 @@ TypeToRetrieveAs* dtGetThenAdvanceBufferPointer(const unsigned char*& buffer, co
     return returnPointer;
 }
 
+/// Retrieves a pointer from a buffer and advances the buffer pointer by a specified distance.
+/// @tparam TypeToRetrieveAs The type to retrieve as.
+/// @param[in,out] buffer Pointer to the buffer.
+/// @param[in] distanceToAdvance The distance to advance the buffer pointer.
+/// @return The retrieved pointer.
 template<typename TypeToRetrieveAs>
 TypeToRetrieveAs* dtGetThenAdvanceBufferPointer(unsigned char*& buffer, const size_t distanceToAdvance)
 {

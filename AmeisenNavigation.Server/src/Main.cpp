@@ -1,5 +1,15 @@
 #include "Main.hpp"
 
+/**
+ * @brief The main entry point of the AmeisenNavigation server.
+ *
+ * This function initializes and runs the AmeisenNavigation server. It reads configuration settings,
+ * handles signal interruptions (Ctrl+C), sets up the server, and starts listening for incoming connections.
+ *
+ * @param argc The number of command-line arguments.
+ * @param argv An array of pointers to command-line arguments.
+ * @return Returns 0 on success or 1 on error.
+ */
 int main(int argc, const char* argv[])
 {
 #if defined(WIN32) || defined(WIN64)
@@ -119,6 +129,14 @@ int main(int argc, const char* argv[])
     }
 }
 
+/**
+ * @brief Signal handler for handling SIGINT events.
+ *
+ * This function is used to handle the SIGINT signal, specifically CTRL-C or CTRL-CLOSE events.
+ *
+ * @param signal The signal code.
+ * @return Returns 1.
+ */
 int __stdcall SigIntHandler(unsigned long signal)
 {
     if (signal == CTRL_C_EVENT || signal == CTRL_CLOSE_EVENT)
@@ -130,6 +148,13 @@ int __stdcall SigIntHandler(unsigned long signal)
     return 1;
 }
 
+/**
+ * @brief Function called when a client connects.
+ *
+ * This function is called when a client connects to the server.
+ *
+ * @param handler The ClientHandler object for the connected client.
+ */
 void OnClientConnect(ClientHandler* handler) noexcept
 {
     LogI("Client Connected: ", handler->GetIpAddress(), ":", handler->GetPort());
@@ -138,6 +163,13 @@ void OnClientConnect(ClientHandler* handler) noexcept
     Nav->NewClient(handler->GetId(), static_cast<CLIENT_VERSION>(Config->clientVersion));
 }
 
+/**
+ * @brief Function called when a client disconnects.
+ *
+ * This function is called when a client disconnects from the server.
+ *
+ * @param handler The ClientHandler object for the disconnected client.
+ */
 void OnClientDisconnect(ClientHandler* handler) noexcept
 {
     Nav->FreeClient(handler->GetId());
@@ -151,16 +183,46 @@ void OnClientDisconnect(ClientHandler* handler) noexcept
     LogI("Client Disconnected: ", handler->GetIpAddress(), ":", handler->GetPort());
 }
 
+/**
+ * @brief Callback function for handling path data.
+ *
+ * This function is a callback for handling path data and delegates to GenericPathCallback with PathType::STRAIGHT.
+ *
+ * @param handler The ClientHandler object.
+ * @param type The data type.
+ * @param data Pointer to the data.
+ * @param size The size of the data.
+ */
 void PathCallback(ClientHandler* handler, char type, const void* data, int size) noexcept
 {
     GenericPathCallback(handler, type, data, size, PathType::STRAIGHT);
 }
 
+/**
+ * @brief Callback function for handling random path data.
+ *
+ * This function is a callback for handling random path data and delegates to GenericPathCallback with PathType::RANDOM.
+ *
+ * @param handler The ClientHandler object.
+ * @param type The data type.
+ * @param data Pointer to the data.
+ * @param size The size of the data.
+ */
 void RandomPathCallback(ClientHandler* handler, char type, const void* data, int size) noexcept
 {
     GenericPathCallback(handler, type, data, size, PathType::RANDOM);
 }
 
+/**
+ * @brief Callback function for generating and sending a random point to the client.
+ *
+ * This function generates a random point on or around the specified map and sends it to the client.
+ *
+ * @param handler The ClientHandler object.
+ * @param type The data type.
+ * @param data Pointer to the data (contains the map ID).
+ * @param size The size of the data (not used in this function).
+ */
 void RandomPointCallback(ClientHandler* handler, char type, const void* data, int size) noexcept
 {
     const int mapId = *reinterpret_cast<const int*>(data);
@@ -170,6 +232,16 @@ void RandomPointCallback(ClientHandler* handler, char type, const void* data, in
     handler->SendData(type, point, VEC3_SIZE);
 }
 
+/**
+ * @brief Callback function for generating and sending a random point around a specified location to the client.
+ *
+ * This function generates a random point around a specified location on the specified map and sends it to the client.
+ *
+ * @param handler The ClientHandler object.
+ * @param type The data type.
+ * @param data Pointer to the data (contains request details like map ID, start location, and radius).
+ * @param size The size of the data (not used in this function).
+ */
 void RandomPointAroundCallback(ClientHandler* handler, char type, const void* data, int size) noexcept
 {
     const RandomPointAroundData request = *reinterpret_cast<const RandomPointAroundData*>(data);
@@ -179,6 +251,16 @@ void RandomPointAroundCallback(ClientHandler* handler, char type, const void* da
     handler->SendData(type, point, VEC3_SIZE);
 }
 
+/**
+ * @brief Callback function for moving along a surface and sending the result to the client.
+ *
+ * This function computes a path for moving along a surface between two points on the specified map and sends it to the client.
+ *
+ * @param handler The ClientHandler object.
+ * @param type The data type.
+ * @param data Pointer to the data (contains request details like map ID, start, and end points).
+ * @param size The size of the data (not used in this function).
+ */
 void MoveAlongSurfaceCallback(ClientHandler* handler, char type, const void* data, int size) noexcept
 {
     const MoveRequestData request = *reinterpret_cast<const MoveRequestData*>(data);
@@ -188,6 +270,16 @@ void MoveAlongSurfaceCallback(ClientHandler* handler, char type, const void* dat
     handler->SendData(type, point, VEC3_SIZE);
 }
 
+/**
+ * @brief Callback function for casting a ray and sending the result to the client.
+ *
+ * This function casts a ray from the start point to the end point on the specified map and sends the result to the client.
+ *
+ * @param handler The ClientHandler object.
+ * @param type The data type.
+ * @param data Pointer to the data (contains request details like map ID and ray endpoints).
+ * @param size The size of the data (not used in this function).
+ */
 void CastRayCallback(ClientHandler* handler, char type, const void* data, int size) noexcept
 {
     const CastRayData request = *reinterpret_cast<const CastRayData*>(data);
@@ -204,6 +296,17 @@ void CastRayCallback(ClientHandler* handler, char type, const void* data, int si
     }
 }
 
+/**
+ * @brief Generic callback function for handling path-related requests and sending the result to the client.
+ *
+ * This function handles path-related requests from clients, including generating paths and smoothing them based on the specified path type.
+ *
+ * @param handler The ClientHandler object.
+ * @param type The data type.
+ * @param data Pointer to the data (contains request details like map ID, start, and end points, and path flags).
+ * @param size The size of the data (not used in this function).
+ * @param pathType The type of path to generate (STRAIGHT or RANDOM).
+ */
 void GenericPathCallback(ClientHandler* handler, char type, const void* data, int size, PathType pathType) noexcept
 {
     const PathRequestData request = *reinterpret_cast<const PathRequestData*>(data);
