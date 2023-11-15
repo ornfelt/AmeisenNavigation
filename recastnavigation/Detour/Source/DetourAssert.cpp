@@ -16,20 +16,33 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
+/**
+ * @file DetourAssert.cpp
+ * @brief Assertion functions for Detour in non-debug mode.
+ */
+
 #include "DetourAssert.h"
 
 #ifndef NDEBUG
 
-static dtAssertFailFunc* sAssertFailFunc = 0;
+static dtAssertFailFunc* sAssertFailFunc = 0; ///< Pointer to the custom assertion failure function.
 
+/**
+ * @brief Set a custom assertion failure function.
+ * @param assertFailFunc A pointer to the custom assertion failure function.
+ */
 void dtAssertFailSetCustom(dtAssertFailFunc* assertFailFunc)
 {
-    sAssertFailFunc = assertFailFunc;
+	sAssertFailFunc = assertFailFunc;
 }
 
+/**
+ * @brief Get the custom assertion failure function.
+ * @return A pointer to the custom assertion failure function.
+ */
 dtAssertFailFunc* dtAssertFailGetCustom()
 {
-    return sAssertFailFunc;
+	return sAssertFailFunc;
 }
 
 #endif

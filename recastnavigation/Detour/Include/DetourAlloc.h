@@ -26,14 +26,14 @@
 
 #include <stddef.h>
 
-/**
- * @brief Provides hint values to the memory allocator on how long the
- * memory is expected to be used.
- */
+ /**
+  * @brief Provides hint values to the memory allocator on how long the
+  * memory is expected to be used.
+  */
 enum dtAllocHint
 {
-    DT_ALLOC_PERM,		///< Memory persist after a function call.
-    DT_ALLOC_TEMP		///< Memory used temporarily within a function.
+	DT_ALLOC_PERM,		///< Memory persist after a function call.
+	DT_ALLOC_TEMP		///< Memory used temporarily within a function.
 };
 
 /**

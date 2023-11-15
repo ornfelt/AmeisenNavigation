@@ -16,35 +16,65 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
+/**
+ * @file DetourAlloc.cpp
+ * @brief Memory allocation functions for Detour.
+ */
+
 #include <stdlib.h>
 #include "DetourAlloc.h"
 
+ /**
+  * @brief Default memory allocation function.
+  * @param size The size of memory to allocate.
+  * @param hint The allocation hint.
+  * @return A pointer to the allocated memory block.
+  */
 static void* dtAllocDefault(size_t size, dtAllocHint)
 {
-    return malloc(size);
+	return malloc(size);
 }
 
+/**
+ * @brief Default memory deallocation function.
+ * @param ptr A pointer to the memory block to deallocate.
+ */
 static void dtFreeDefault(void* ptr)
 {
-    free(ptr);
+	free(ptr);
 }
 
-static dtAllocFunc* sAllocFunc = dtAllocDefault;
-static dtFreeFunc* sFreeFunc = dtFreeDefault;
+static dtAllocFunc* sAllocFunc = dtAllocDefault; ///< Pointer to the custom allocation function.
+static dtFreeFunc* sFreeFunc = dtFreeDefault;   ///< Pointer to the custom deallocation function.
 
+/**
+ * @brief Set custom memory allocation and deallocation functions.
+ * @param allocFunc A pointer to the custom allocation function. Pass nullptr to use the default.
+ * @param freeFunc A pointer to the custom deallocation function. Pass nullptr to use the default.
+ */
 void dtAllocSetCustom(dtAllocFunc* allocFunc, dtFreeFunc* freeFunc)
 {
-    sAllocFunc = allocFunc ? allocFunc : dtAllocDefault;
-    sFreeFunc = freeFunc ? freeFunc : dtFreeDefault;
+	sAllocFunc = allocFunc ? allocFunc : dtAllocDefault;
+	sFreeFunc = freeFunc ? freeFunc : dtFreeDefault;
 }
 
+/**
+ * @brief Allocate memory with a specified size and hint.
+ * @param size The size of memory to allocate.
+ * @param hint The allocation hint.
+ * @return A pointer to the allocated memory block.
+ */
 void* dtAlloc(size_t size, dtAllocHint hint)
 {
-    return sAllocFunc(size, hint);
+	return sAllocFunc(size, hint);
 }
 
+/**
+ * @brief Deallocate memory previously allocated using dtAlloc.
+ * @param ptr A pointer to the memory block to deallocate.
+ */
 void dtFree(void* ptr)
 {
-    if (ptr)
-        sFreeFunc(ptr);
+	if (ptr)
+		sFreeFunc(ptr);
 }
